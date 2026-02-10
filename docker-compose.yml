@@ -1,0 +1,32 @@
+version: '3.8'
+
+services:
+  cors-relay:
+    build: .
+    image: cors-anywhere:local
+    container_name: cors-relay
+    restart: unless-stopped
+    # 設定資源限制，避免佔用過多 NAS 資源 (可選)
+    # deploy:
+    #   resources:
+    #     limits:
+    #       cpus: '0.5'
+    #       memory: 128M
+    ports:
+      # 將 NAS 的 3000 Port 對應到容器的 8080 Port
+      # 你可以在 Cloudflare Tunnel 指向 http://localhost:3000
+      - "3000:8080"
+    environment:
+      # 這些變數定義在 server.js 中
+      - PORT=8080
+      - HOST=0.0.0.0
+      
+      # 安全性設定 (強烈建議設定)
+      # 如果你在 Cloudflare Access 已經做了驗證，這裡可以留空 (允許所有來源)
+      # 或是限制只允許帶有特定 Origin Header 的請求
+      # - CORSANYWHERE_WHITELIST=https://your-worker-subdomain.workers.dev
+      
+      # 速率限制 (選填)
+      # 格式: <max requests> <period in minutes> <whitelist domains>
+      # 例如: 每分鐘最多 100 次請求
+      # - CORSANYWHERE_RATELIMIT=100 1
