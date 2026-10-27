@@ -15,7 +15,8 @@ services:
     ports:
       # 將 NAS 的 3000 Port 對應到容器的 8080 Port
       # 你可以在 Cloudflare Tunnel 指向 http://localhost:3000
-      - "3000:8080"
+      # 只綁本機：給同一台主機上的 cloudflared 使用；綁 0.0.0.0 會讓區網任何裝置都能直接用這個代理
+      - "127.0.0.1:3000:8080"
     environment:
       # 這些變數定義在 server.js 中
       - PORT=8080
